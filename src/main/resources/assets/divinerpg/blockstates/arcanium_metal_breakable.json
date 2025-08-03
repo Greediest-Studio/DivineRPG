@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "axis=y":  { "model": "divinerpg:arcanium_metal" },
+    "axis=z":   { "model": "divinerpg:arcanium_metal", "x": 90 },
+    "axis=x":   { "model": "divinerpg:arcanium_metal", "x": 90, "y": 90 }
+  }
+}
+

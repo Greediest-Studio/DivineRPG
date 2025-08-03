@@ -1,0 +1,8 @@
+{
+  "parent": "block/half_slab",
+  "textures": {
+    "side": "divinerpg:blocks/degraded_bricks",
+    "top": "divinerpg:blocks/degraded_bricks",
+    "bottom": "divinerpg:blocks/degraded_bricks"
+  }
+}
