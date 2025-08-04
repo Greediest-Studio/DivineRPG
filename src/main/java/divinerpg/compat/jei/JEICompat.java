@@ -1,10 +1,12 @@
 package divinerpg.compat.jei;
 
 import divinerpg.DivineRPG;
+import divinerpg.compat.jei.base.ArcaniumExtractorRecipeWrapper;
 import divinerpg.compat.jei.base.SmelterCategory;
 import divinerpg.compat.jei.base.TripleRecipeWrapper;
 import divinerpg.compat.jei.base.VillagerCategory;
 import divinerpg.objects.blocks.tile.container.gui.ArcaniumExtractorGUI;
+import divinerpg.objects.blocks.tile.entity.TileEntityArcaniumExtractor;
 import divinerpg.objects.entities.container.gui.*;
 import divinerpg.registry.ArmorRegistry;
 import divinerpg.registry.BlockRegistry;
@@ -17,11 +19,14 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipe;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @JEIPlugin
@@ -94,7 +99,7 @@ public class JEICompat implements IModPlugin {
         registry.addRecipeCategories(new SmelterCategory(guiHelper,
                 ArcaniumExtractorGUI.TEXTURES,
                 JeiReferences.ARCANA_EXTRACTOR_CATEGORY,
-                "Arcanium Extractor",
+                I18n.format("jei.gui.arcanium_extractor"),
                 new ItemStack(ItemRegistry.collector)));
     }
 
@@ -113,8 +118,25 @@ public class JEICompat implements IModPlugin {
         registerVillagerRecepies(registry, EntityDatticon, JeiReferences.DATTICON_CATEGORY);
         registerVillagerRecepies(registry, EntityLordVatticus.getAllRecipies(), JeiReferences.LORD_VATTICUS_CATEGORY);
         registerVillagerRecepies(registry, EntityZelus.getAllRecipies(), JeiReferences.ZELUS_CATEGORY);*/
-        registry.addRecipes(Arrays.asList(new TripleRecipeWrapper(new ItemStack(BlockRegistry.rawArcanium),
-                new ItemStack(ItemRegistry.collector), new ItemStack(ItemRegistry.arcanium))), JeiReferences.ARCANA_EXTRACTOR_CATEGORY);
+        List<ArcaniumExtractorRecipeWrapper> recipes = new ArrayList<>();
+
+        for (Map.Entry<Item, ItemStack> entry : TileEntityArcaniumExtractor.getSmeltingRecipes().entrySet()) {
+            recipes.add(new ArcaniumExtractorRecipeWrapper(
+                    new ItemStack(entry.getKey()),
+                    entry.getValue().copy()
+            ));
+        }
+
+        registry.addRecipes(recipes, JeiReferences.ARCANA_EXTRACTOR_CATEGORY);
+
+        for (ItemStack fuel : TileEntityArcaniumExtractor.getFuelItems()) {
+            int burnTime = TileEntityArcaniumExtractor.getBurnTime(fuel);
+            if (burnTime > 0) {
+                registry.addIngredientInfo(fuel, ItemStack.class,
+                        I18n.format("jei.arcanium_extractor.description"),
+                        I18n.format("jei.arcanium_extractor.fuel") + formatBurnTime(burnTime));
+            }
+        }
 
         registry.addRecipeCatalyst(new ItemStack(BlockRegistry.demonFurnace), VanillaRecipeCategoryUid.SMELTING);
         registry.addRecipeCatalyst(new ItemStack(BlockRegistry.greenlightFurnace), VanillaRecipeCategoryUid.SMELTING);
@@ -123,7 +145,6 @@ public class JEICompat implements IModPlugin {
         registry.addRecipeCatalyst(new ItemStack(BlockRegistry.whitefireFurnace), VanillaRecipeCategoryUid.SMELTING);
         registry.addRecipeCatalyst(new ItemStack(BlockRegistry.coalstoneFurnace), VanillaRecipeCategoryUid.SMELTING);
         registry.addRecipeCatalyst(new ItemStack(BlockRegistry.oceanfireFurnace), VanillaRecipeCategoryUid.SMELTING);
-
         registry.addRecipeCatalyst(new ItemStack(BlockRegistry.arcaniumExtractor), JeiReferences.ARCANA_EXTRACTOR_CATEGORY);
     }
 
@@ -132,5 +153,13 @@ public class JEICompat implements IModPlugin {
         .stream()
                 .map(TripleRecipeWrapper::new)
         .collect(Collectors.toList()), name);
+    }
+
+    private String formatBurnTime(int ticks) {
+        int seconds = ticks / 20;
+        if (seconds > 0) {
+            return seconds + " s";
+        }
+        return ticks + " t";
     }
 }

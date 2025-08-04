@@ -1,12 +1,13 @@
 package divinerpg.compat.jei.base;
 
+import divinerpg.objects.blocks.tile.entity.TileEntityArcaniumExtractor;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawableAnimated;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -33,12 +34,25 @@ public class SmelterCategory extends VillagerCategory {
         itemStacks.init(2, false, 115, 34);
 
         itemStacks.set(ingredients);
+
+        if (wrapper instanceof ArcaniumExtractorRecipeWrapper) {
+            ArcaniumExtractorRecipeWrapper recipeWrapper = (ArcaniumExtractorRecipeWrapper) wrapper;
+            itemStacks.addTooltipCallback((slotIndex, input, ingredient, tooltip) -> {
+                if (slotIndex == 1 && !ingredient.isEmpty()) {
+                    int burnTime = TileEntityArcaniumExtractor.getBurnTime(ingredient);
+                    if (burnTime > 0) {
+                        tooltip.add(I18n.format("jei.arcanium_extractor.fuel") + formatBurnTime(burnTime));
+                    }
+                }
+            });
+        }
     }
 
-    @Override
-    public void drawExtras(Minecraft minecraft) {
-        animatedFlame.draw(minecraft, 57, 36);
-        arrow.draw(minecraft, 79, 35);
+    private String formatBurnTime(int ticks) {
+        int seconds = ticks / 20;
+        if (seconds > 0) {
+            return seconds + " s";
+        }
+        return ticks + " t";
     }
-
 }

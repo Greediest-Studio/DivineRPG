@@ -130,6 +130,7 @@ dependencies {
     implementation "curse.maven:baubles-227083:2518667"
     implementation "curse.maven:hei-557549:6187146"
     implementation "curse.maven:JustEnoughResources-240630:2728585"
+    implementation "curse.maven:crafttweaker-239197:6669824"
 
     if (propertyBool('use_asset_mover')) {
         implementation "com.cleanroommc:assetmover:${propertyString('asset_mover_version')}"

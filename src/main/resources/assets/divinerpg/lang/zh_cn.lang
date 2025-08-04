@@ -9,6 +9,10 @@ itemGroup.divinerpg_utility=神圣RPG：器械
 itemGroup.divinerpg_food_and_agriculture=神圣RPG：食物与农业
 itemGroup.divinerpg_vethea=神圣RPG：草药
 
+jei.gui.arcanium_extractor=秘界提取器
+jei.arcanium_extractor.description=可在奥术提取器中用作燃料
+jei.arcanium_extractor.fuel=燃烧时间:
+
 tile.divine_sapling.name=神圣树苗
 tile.rupee_ore.name=卢比矿石
 tile.arlemite_ore.name=阿尔米特矿石
