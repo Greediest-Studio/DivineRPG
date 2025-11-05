@@ -21,7 +21,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 public abstract class TileEntityModFurnace extends TileEntity implements ISidedInventory, ITickable {
     // 0 is input. 1 is fuel and 2 is output.
     private static final int[] SLOTS_TOP = new int[] { 0 };
-    private static final int[] SLOTS_BOTTOM = new int[] { 2, 1 };
+    private static final int[] SLOTS_BOTTOM = new int[] { 0, 2 };
     private static final int[] SLOTS_SIDES = new int[] { 1 };
     private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(3, ItemStack.EMPTY);
     public int furnaceBurnTime;
@@ -328,7 +328,7 @@ public abstract class TileEntityModFurnace extends TileEntity implements ISidedI
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-        if (index == 1) {
+        if (index == 2) {
             return true;
         }
         return false;
