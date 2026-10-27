@@ -62,6 +62,11 @@ public class WorldProviderMortum extends WorldProvider {
         return 70;
     }
 
+    @Override
+    public int getActualHeight() {
+        return 128;
+    }
+
 	@Override
     @SideOnly(Side.CLIENT)
     public boolean doesXZShowFog(int x, int z) {
